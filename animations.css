@@ -1,0 +1,460 @@
+/* ===================================================================
+   FORHAD HOSSAIN — PREMIUM ANIMATIONS
+   Scroll-reveal, hover effects, parallax, stagger, ripple
+   All ease-out | 500–900ms | Intersection Observer powered
+   =================================================================== */
+
+/* ============================================================
+   1. SECTION TRANSITION SEPARATOR
+   ============================================================ */
+.section {
+  position: relative;
+}
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+  opacity: 0;
+  transform: scaleX(0);
+  transition: opacity 0.8s ease-out, transform 0.9s ease-out;
+}
+.section.section-entered::before {
+  opacity: 0.25;
+  transform: scaleX(1);
+}
+
+/* ============================================================
+   2. BASE REVEAL STATES — override the existing [data-reveal]
+      with direction-aware variants
+   ============================================================ */
+
+/* Default (already in styles.css) — kept as fallback */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity  0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Slide from left --- */
+[data-reveal="left"] {
+  transform: translateX(-48px);
+  opacity: 0;
+}
+[data-reveal="left"].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Slide from right --- */
+[data-reveal="right"] {
+  transform: translateX(48px);
+  opacity: 0;
+}
+[data-reveal="right"].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Fade up (stats) --- */
+[data-reveal="fade-up"] {
+  transform: translateY(24px);
+  opacity: 0;
+}
+[data-reveal="fade-up"].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Fade in (contact, hero) --- */
+[data-reveal="fade"] {
+  transform: none;
+  opacity: 0;
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal="fade"].revealed {
+  opacity: 1;
+}
+
+/* --- Scale in (cards) --- */
+[data-reveal="scale"] {
+  transform: scale(0.94) translateY(20px);
+  opacity: 0;
+}
+[data-reveal="scale"].revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* ============================================================
+   3. STAGGER DELAYS FOR GRID CHILDREN
+   ============================================================ */
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity  0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-stagger].stagger-revealed > *:nth-child(1)  { transition-delay: 0ms;   }
+[data-stagger].stagger-revealed > *:nth-child(2)  { transition-delay: 80ms;  }
+[data-stagger].stagger-revealed > *:nth-child(3)  { transition-delay: 160ms; }
+[data-stagger].stagger-revealed > *:nth-child(4)  { transition-delay: 240ms; }
+[data-stagger].stagger-revealed > *:nth-child(5)  { transition-delay: 320ms; }
+[data-stagger].stagger-revealed > *:nth-child(6)  { transition-delay: 400ms; }
+[data-stagger].stagger-revealed > *:nth-child(7)  { transition-delay: 480ms; }
+[data-stagger].stagger-revealed > *:nth-child(8)  { transition-delay: 560ms; }
+[data-stagger].stagger-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   4. HERO SECTION — Fade + Zoom (already has keyframe animations;
+      we add a subtle floating effect to the portrait credential card)
+   ============================================================ */
+.about-credential-card {
+  animation: floatCard 5s ease-in-out infinite;
+}
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+/* Adjust for mobile override in styles.css */
+@media (max-width: 940px) {
+  .about-credential-card {
+    animation: floatCardCenter 5s ease-in-out infinite;
+  }
+  @keyframes floatCardCenter {
+    0%, 100% { transform: translateX(50%) translateY(0px); }
+    50%       { transform: translateX(50%) translateY(-8px); }
+  }
+}
+
+/* Hero scroll-cue parallax nudge */
+.hero-content {
+  animation: heroDriftIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes heroDriftIn {
+  from { opacity: 0; transform: scale(0.97) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* ============================================================
+   5. ABOUT PORTRAIT — subtle scale on hover
+   ============================================================ */
+.about-portrait-frame {
+  transition: box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.about-portrait-frame img {
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.about-portrait-frame:hover img {
+  transform: scale(1.04);
+}
+.about-portrait-frame:hover {
+  box-shadow: 0 28px 70px rgba(10, 22, 40, 0.28);
+}
+
+/* ============================================================
+   6. PRACTICE CARDS — enhanced hover lift & border glow
+   ============================================================ */
+.practice-card {
+  transition:
+    transform   0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow  0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease;
+}
+.practice-card:hover {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 20px 50px rgba(10, 22, 40, 0.14);
+  border-color: rgba(201, 162, 75, 0.45);
+}
+.practice-icon {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.4s ease;
+}
+.practice-card:hover .practice-icon {
+  transform: scale(1.12) rotate(-4deg);
+  background: linear-gradient(135deg, rgba(201,162,75,0.28), rgba(201,162,75,0.10));
+}
+
+/* ============================================================
+   7. WHY CARDS — hover glow
+   ============================================================ */
+.why-card {
+  transition: background 0.35s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.why-card:hover {
+  background: var(--navy-900);
+  transform: translateY(-4px);
+}
+.why-num {
+  transition: color 0.3s ease, letter-spacing 0.3s ease;
+}
+.why-card:hover .why-num {
+  color: var(--gold-400);
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   8. BUTTONS — lift + ripple effect
+   ============================================================ */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform   0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow  0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background  0.3s ease,
+    color       0.3s ease,
+    border-color 0.3s ease;
+}
+.btn:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Ripple element injected by JS */
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  transform: scale(0);
+  animation: rippleExpand 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes rippleExpand {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ============================================================
+   9. NAV LINKS — animated underline (already in styles.css,
+      enhanced with smoother timing)
+   ============================================================ */
+.main-nav a::after {
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Footer links hover */
+.footer-col a {
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+}
+.footer-col a:hover {
+  color: var(--gold-400);
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   10. GALLERY ITEMS — staggered reveal + enhanced hover
+   ============================================================ */
+.gallery-item {
+  transition:
+    transform   0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow  0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gallery-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 16px 48px rgba(10, 22, 40, 0.22);
+  z-index: 2;
+}
+
+/* ============================================================
+   11. TESTIMONIAL CARDS — slide-up with stagger
+   ============================================================ */
+.testimonial-card {
+  transition:
+    transform   0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow  0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(10, 22, 40, 0.1);
+}
+
+/* ============================================================
+   12. FAQ ITEMS — hover highlight
+   ============================================================ */
+.faq-item {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.faq-item:hover {
+  border-color: rgba(201, 162, 75, 0.3);
+  box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06);
+}
+.faq-question {
+  transition: color 0.25s ease;
+}
+.faq-question:hover {
+  color: var(--gold-600);
+}
+[data-theme="dark"] .faq-question:hover {
+  color: var(--gold-400);
+}
+
+/* ============================================================
+   13. STAT ITEMS — subtle hover scale
+   ============================================================ */
+.stat-item {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.stat-item:hover {
+  transform: translateY(-4px);
+}
+.stat-number {
+  transition: color 0.3s ease;
+}
+.stat-item:hover .stat-number {
+  color: var(--gold-300, var(--gold-400));
+}
+
+/* ============================================================
+   14. LAW BANNER / STRIP — parallax images (scaled via JS)
+   ============================================================ */
+.law-banner-item img,
+.law-strip-item img {
+  transform-origin: center center;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s ease;
+  will-change: transform;
+}
+
+/* ============================================================
+   15. SOCIAL ICON HOVER
+   ============================================================ */
+.footer-socials a {
+  transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.footer-socials a:hover {
+  border-color: var(--gold-400);
+  color: var(--gold-400);
+  transform: translateY(-3px) scale(1.1);
+}
+
+/* ============================================================
+   16. CONTACT CARD detail hover
+   ============================================================ */
+.contact-detail {
+  transition: background 0.25s ease;
+  border-radius: 8px;
+  margin: 0 -8px;
+  padding-left: 8px; padding-right: 8px;
+}
+.contact-detail:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* ============================================================
+   17. WHATSAPP FAB — pulse ring
+   ============================================================ */
+.whatsapp-fab {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+.whatsapp-fab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.55);
+  animation: waPulse 2.4s ease-out infinite;
+}
+@keyframes waPulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.whatsapp-fab:hover {
+  transform: scale(1.1) translateY(-3px);
+  box-shadow: 0 14px 36px rgba(37, 211, 102, 0.55);
+}
+
+/* ============================================================
+   18. BACK-TO-TOP hover glow
+   ============================================================ */
+.back-to-top {
+  transition: opacity 0.35s ease, transform 0.35s ease,
+              background 0.3s ease, color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+.back-to-top:hover {
+  background: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: 0 8px 24px rgba(201, 162, 75, 0.45);
+  transform: translateY(-3px) scale(1);
+}
+
+/* ============================================================
+   19. FORM FIELD — focus lift
+   ============================================================ */
+.form-field input,
+.form-field select,
+.form-field textarea {
+  transition:
+    border-color  0.3s ease,
+    box-shadow    0.3s ease,
+    transform     0.25s ease;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   20. CONSULTATION FORM CARD hover glow
+   ============================================================ */
+.consultation-form {
+  transition:
+    box-shadow  0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    transform   0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.consultation-form:hover {
+  box-shadow: 0 24px 64px rgba(10, 22, 40, 0.13);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   21. SECTION HEAD — eyebrow line animation
+   ============================================================ */
+.eyebrow::before {
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease;
+}
+.revealed .eyebrow::before,
+.section-entered .eyebrow::before {
+  width: 22px;
+}
+
+/* ============================================================
+   22. REDUCED MOTION — disable all animations gracefully
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-stagger] > *,
+  .about-credential-card,
+  .btn-ripple,
+  .whatsapp-fab::before,
+  .hero-content {
+    animation: none !important;
+    transition: opacity 0.15s ease !important;
+    transform: none !important;
+  }
+  [data-reveal] { opacity: 0; }
+  [data-reveal].revealed { opacity: 1; }
+  [data-stagger] > * { opacity: 0; }
+  [data-stagger].stagger-revealed > * { opacity: 1; }
+}
